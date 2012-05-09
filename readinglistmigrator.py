@@ -5,6 +5,7 @@
 import readability
 import marshal
 import os
+import readitlater
 
 # Import config file
 from config import *
@@ -61,11 +62,36 @@ if conn is None:
     sys.exit()
 
 
+print "The loggedin username"
 print conn.get_me()
 
+# Get readability bookmarks
+print "Getting bookmarks from readability..."
 bookmarks = conn.get_bookmarks()
 
-print bookmarks
-bookmark = bookmarks[0]
-print bookmark
-print dir(bookmark)
+# Connect to GetPocket
+gp_conn = readitlater.API(GETPOCKET_API_KEY, GETPOCKET_USERNAME,
+        GETPOCKET_PASSWORD)
+
+print "Getting GetPocket Status..."
+print gp_conn.status()
+
+# List to hold the bookmarks in single batch
+readitlater_batch = []
+
+print "Adding bookmarks to GetPockets..."
+for mark in bookmarks:
+    item = {}
+    item['url'] = mark.article.url
+    item['title'] = mark.article.title
+    readitlater_batch.append(item)
+    if len(readitlater_batch) >= 10:
+        print "Adding batch of 10 urls to GetPocket"
+        gp_conn.send(new=readitlater_batch)
+        readitlater_batch = []
+
+if readitlater_batch:
+    print "Add batch of %d urls to GetPocket" % len(readitlater_batch)
+    gp_conn.send(new=readitlater_batch)
+
+print "Completed the copying of bookmarks from Readability to GetPocket"

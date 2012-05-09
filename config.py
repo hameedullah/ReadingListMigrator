@@ -12,6 +12,15 @@ USERNAME = ''
 # Readabiliyt password
 PASSWORD = ''
 
+# GetPocket (Formerly ReadItLater) API Key
+GETPOCKET_API_KEY = ''
+
+# GetPocket Username
+GETPOCKET_USERNAME = ""
+
+# GetPocket Password
+GETPOCKET_PASSWORD = ""
+
 # Debugging and development related config
 DEV_ENV = True
 DEBUG = DEV_ENV
